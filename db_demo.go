@@ -153,6 +153,9 @@ func exitHandler(w http.ResponseWriter, r *http.Request) {
 func viewHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Path[len("/view/"):]
 	// Extract "name" from URL path
+	if name == "ALL" {
+		name = "" // Invalid for View (Due to redirecting Issues)
+	}
 	var body string
 
 	// Create Variables
@@ -243,7 +246,6 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/view/"+name, http.StatusFound) // Redirect to /view/name
 }
 
-//
 // Edit Handler
 //
 // localhost:8080/edit/name
@@ -256,6 +258,11 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 	if name == "ALL" {
 		// Name = ALL -- Print Error
 		fmt.Fprintf(w, "<h1>Edit Error: %s</h1>", "'ALL' is a Command!")
+		return
+	}
+	if len(name) <= 0 {
+		// Name = Blank -- Print Error
+		fmt.Fprintf(w, "<h1>Edit Error: %s</h1>", "Blank Name")
 		return
 	}
 	p, ok := findName(xMem, string(name))
@@ -305,9 +312,9 @@ func deleteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	p, ok := findExactName(xMem, string(name))
 	// Not ALL - Find Name
-	if !ok {
+	if !ok && name != "ALL" {
 		// Report Failure
-		fmt.Fprintf(w, "<h1>View: '%s' %s</h1>", name, "not found!")
+		fmt.Fprintf(w, "<h1>Delete: '%s' %s</h1>", name, "not found!")
 		return
 	} else {
 		// Deletion has to be done this way to insure that internal index updated!
