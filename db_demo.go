@@ -234,14 +234,18 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Path[len("/save/"):] // Get "name" value if present
 	if len(name) <= 0 {                // If no name - redirect to /view
 		http.Redirect(w, r, "/view/", http.StatusFound)
+		return
 	}
 	pg, ok := findName(xMem, name) // Find "name"
 	if !ok {                       // If error - report it and panic
-		fmt.Println("Name Lookup Failed")
-		panic("error")
+		http.Redirect(w, r, "/view/", http.StatusOK) //Redirect to /view/
+		return
 	}
 	body := r.FormValue("body") // Get <form> value for "body"
 	p := &Page{Index: pg.Index, Name: name, Body: []byte(body)}
+	if len(body) <= 0 {
+		p = &Page{Index: pg.Index, Name: name, Body: pg.Body}
+	}
 	p.save()
 	http.Redirect(w, r, "/view/"+name, http.StatusFound) // Redirect to /view/name
 }
@@ -254,7 +258,7 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 	var np Page
 	// Create Variables
 	name := r.URL.Path[len("/edit/"):]
-	// Extract Name Portion
+	// Extract Name Portion {5 Ann []}]
 	if name == "ALL" {
 		// Name = ALL -- Print Error
 		fmt.Fprintf(w, "<h1>Edit Error: %s</h1>", "'ALL' is a Command!")
