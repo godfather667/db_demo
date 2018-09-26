@@ -1,3 +1,4 @@
+// db_demo_test - Test Suite for db_demo.
 package main
 
 import (
@@ -42,7 +43,6 @@ const null_db = "null"
 // Test Database Loader
 //
 func TestLoadDatabase(t *testing.T) {
-	fmt.Println("Starting Database Test")
 	err := os.Remove("Data.db") // Remove Current Database
 	if err != nil {
 		fmt.Println("Database Not present - Creating")
@@ -62,8 +62,6 @@ func TestLoadDatabase(t *testing.T) {
 //  Test "viewHandler" Function
 //
 func TestViewHandler(t *testing.T) {
-	fmt.Println("Starting View Handler Test")
-
 	viewRequest, err := http.NewRequest("GET", "/view/", nil)
 	if err != nil {
 		t.Fatal("View NewRequest error: ", err)
@@ -179,7 +177,6 @@ func TestViewHandler(t *testing.T) {
 //  Test deleteHandler" Function
 //
 func TestDeleteHandler(t *testing.T) {
-	fmt.Println("Starting Delete Handler Test")
 	// Setup Requests needed later
 	allRequest, err := http.NewRequest("GET", "/delete/ALL", nil)
 	if err != nil {
@@ -293,7 +290,6 @@ func TestDeleteHandler(t *testing.T) {
 //  Test "editHandler" Function
 //
 func TestEditHandler(t *testing.T) {
-	fmt.Println("Starting Edit Handler Test")
 	// Setup Requests needed later
 	allRequest, err := http.NewRequest("GET", "/edit/ALL", nil)
 	if err != nil {
@@ -386,7 +382,6 @@ func TestEditHandler(t *testing.T) {
 //  Test "saveHandler" Function
 //
 func TestSaveHandler(t *testing.T) {
-	fmt.Println("Starting Save Handler Test")
 	// Setup Requests needed later
 	annRequest, err := http.NewRequest("GET", "/save/Ann", nil)
 	if err != nil {
